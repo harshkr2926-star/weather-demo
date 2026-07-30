@@ -18,7 +18,7 @@
    const API_KEY = "abc123xyz...";
 */
 
-const API_KEY = "PASTE_YOUR_OPENWEATHER_API_KEY_HERE";
+const API_KEY = "a6ea71a71294e845a6d055fb92a11f42";
 
 
 const WEATHER_API =
