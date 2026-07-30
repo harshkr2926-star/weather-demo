@@ -1,17 +1,24 @@
 /* =========================================================
    SKYCAST WEATHER APP
-   OpenWeatherMap API
+   COMPLETE CORRECTED script.js
 ========================================================= */
 
 
 /* =========================================================
-   API CONFIGURATION
+   1. API KEY
 ========================================================= */
 
-// IMPORTANT:
-// Replace this with your REAL OpenWeatherMap API key.
+/*
+   GET YOUR KEY FROM:
+   https://openweathermap.org/api
 
-const API_KEY = "YOUR_OPENWEATHER_API_KEY";
+   Replace ONLY the text inside the quotes.
+
+   Example:
+   const API_KEY = "abc123xyz...";
+*/
+
+const API_KEY = "PASTE_YOUR_OPENWEATHER_API_KEY_HERE";
 
 
 const WEATHER_API =
@@ -25,35 +32,21 @@ const AIR_API =
 
 
 /* =========================================================
-   GET HTML ELEMENTS
+   2. HTML ELEMENTS
 ========================================================= */
 
-const inputBox =
-    document.getElementById("input-box");
+const inputBox = document.getElementById("input-box");
+const searchBtn = document.getElementById("search-btn");
+const locationBtn = document.getElementById("locationBtn");
 
-const searchBtn =
-    document.getElementById("search-btn");
+const loading = document.getElementById("loading");
+const weatherContent = document.getElementById("weatherContent");
 
-const locationBtn =
-    document.getElementById("locationBtn");
-
-const loading =
-    document.getElementById("loading");
-
-const weatherContent =
-    document.getElementById("weatherContent");
-
-const errorBox =
-    document.getElementById("errorBox");
-
-const errorMessage =
-    document.getElementById("errorMessage");
+const errorBox = document.getElementById("errorBox");
+const errorMessage = document.getElementById("errorMessage");
 
 const recentSearches =
     document.getElementById("recentSearches");
-
-
-/* Weather */
 
 const cityName =
     document.getElementById("cityName");
@@ -94,9 +87,6 @@ const sunset =
 const forecastGrid =
     document.getElementById("forecastGrid");
 
-
-/* Air Quality */
-
 const aqValue =
     document.getElementById("aqValue");
 
@@ -105,18 +95,18 @@ const aqStatus =
 
 
 /* =========================================================
-   API KEY CHECK
+   3. CHECK API KEY
 ========================================================= */
 
-function checkAPIKey() {
+function hasValidAPIKey() {
 
     if (
         !API_KEY ||
-        API_KEY === "YOUR_OPENWEATHER_API_KEY"
+        API_KEY === "PASTE_YOUR_OPENWEATHER_API_KEY_HERE"
     ) {
 
         showError(
-            "API key missing. Add your OpenWeatherMap API key inside script.js."
+            "OpenWeather API key is missing. Open script.js and paste your real API key."
         );
 
         return false;
@@ -127,19 +117,18 @@ function checkAPIKey() {
 
 
 /* =========================================================
-   SEARCH BUTTON
+   4. SEARCH BUTTON
 ========================================================= */
 
 searchBtn.addEventListener("click", function () {
 
-    const city =
-        inputBox.value.trim();
+    const city = inputBox.value.trim();
 
-    if (!city) {
+    if (city === "") {
 
-        showError(
-            "Please enter a city name."
-        );
+        showError("Please enter a city name.");
+
+        inputBox.focus();
 
         return;
     }
@@ -150,21 +139,18 @@ searchBtn.addEventListener("click", function () {
 
 
 /* =========================================================
-   ENTER KEY SEARCH
+   5. ENTER KEY
 ========================================================= */
 
 inputBox.addEventListener("keydown", function (event) {
 
     if (event.key === "Enter") {
 
-        const city =
-            inputBox.value.trim();
+        const city = inputBox.value.trim();
 
-        if (!city) {
+        if (city === "") {
 
-            showError(
-                "Please enter a city name."
-            );
+            showError("Please enter a city name.");
 
             return;
         }
@@ -176,150 +162,58 @@ inputBox.addEventListener("keydown", function (event) {
 
 
 /* =========================================================
-   CURRENT LOCATION
-========================================================= */
-
-locationBtn.addEventListener("click", function () {
-
-    if (!checkAPIKey()) {
-        return;
-    }
-
-
-    if (!navigator.geolocation) {
-
-        showError(
-            "Geolocation is not supported by your browser."
-        );
-
-        return;
-    }
-
-
-    showLoading();
-
-    hideError();
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function (position) {
-
-            const latitude =
-                position.coords.latitude;
-
-            const longitude =
-                position.coords.longitude;
-
-
-            getWeatherByCoordinates(
-                latitude,
-                longitude
-            );
-
-        },
-
-        function (error) {
-
-            hideLoading();
-
-
-            if (error.code === 1) {
-
-                showError(
-                    "Location permission denied. Please allow location access."
-                );
-
-            } else if (error.code === 2) {
-
-                showError(
-                    "Your location could not be detected."
-                );
-
-            } else if (error.code === 3) {
-
-                showError(
-                    "Location request timed out."
-                );
-
-            } else {
-
-                showError(
-                    "Unable to get your location."
-                );
-            }
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-
-    );
-
-});
-
-
-/* =========================================================
-   GET WEATHER BY CITY
+   6. GET WEATHER BY CITY
 ========================================================= */
 
 async function getWeatherByCity(city) {
 
-    if (!checkAPIKey()) {
+    if (!hasValidAPIKey()) {
         return;
     }
 
-
     showLoading();
-
     hideError();
-
 
     try {
 
-        /* ================= CURRENT WEATHER ================= */
+        /* -----------------------------------------------
+           CURRENT WEATHER
+        ------------------------------------------------ */
 
         const weatherURL =
             `${WEATHER_API}?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
 
-
         const weatherResponse =
             await fetch(weatherURL);
-
 
         const weatherData =
             await weatherResponse.json();
 
 
-        /*
-         * IMPORTANT:
-         * Check response BEFORE displaying data.
-         */
+        /* -----------------------------------------------
+           CHECK CURRENT WEATHER RESPONSE
+        ------------------------------------------------ */
 
         if (!weatherResponse.ok) {
 
             throw new Error(
-                getAPIError(
+                getErrorMessage(
                     weatherResponse.status,
                     weatherData
                 )
             );
-
         }
 
 
-        /* ================= FORECAST ================= */
+        /* -----------------------------------------------
+           5 DAY FORECAST
+        ------------------------------------------------ */
 
         const forecastURL =
             `${FORECAST_API}?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
 
-
         const forecastResponse =
             await fetch(forecastURL);
-
 
         const forecastData =
             await forecastResponse.json();
@@ -328,16 +222,17 @@ async function getWeatherByCity(city) {
         if (!forecastResponse.ok) {
 
             throw new Error(
-                getAPIError(
+                getErrorMessage(
                     forecastResponse.status,
                     forecastData
                 )
             );
-
         }
 
 
-        /* ================= DISPLAY ================= */
+        /* -----------------------------------------------
+           SHOW WEATHER
+        ------------------------------------------------ */
 
         displayWeather(
             weatherData,
@@ -345,7 +240,9 @@ async function getWeatherByCity(city) {
         );
 
 
-        /* ================= AIR QUALITY ================= */
+        /* -----------------------------------------------
+           AIR QUALITY
+        ------------------------------------------------ */
 
         getAirQuality(
             weatherData.coord.lat,
@@ -353,9 +250,17 @@ async function getWeatherByCity(city) {
         );
 
 
-        /* ================= SAVE SEARCH ================= */
+        /* -----------------------------------------------
+           SAVE CITY
+        ------------------------------------------------ */
 
-        saveRecentSearch(city);
+        saveRecentSearch(
+            weatherData.name
+        );
+
+
+        inputBox.value =
+            weatherData.name;
 
 
     } catch (error) {
@@ -364,120 +269,6 @@ async function getWeatherByCity(city) {
             "Weather Error:",
             error
         );
-
-
-        showError(
-            error.message ||
-            "Unable to get weather data."
-        );
-
-    } finally {
-
-        hideLoading();
-
-    }
-
-}
-
-
-/* =========================================================
-   GET WEATHER BY LOCATION
-========================================================= */
-
-async function getWeatherByCoordinates(
-    latitude,
-    longitude
-) {
-
-    if (!checkAPIKey()) {
-        return;
-    }
-
-
-    try {
-
-        /* Current Weather */
-
-        const weatherURL =
-            `${WEATHER_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
-
-        const weatherResponse =
-            await fetch(weatherURL);
-
-
-        const weatherData =
-            await weatherResponse.json();
-
-
-        if (!weatherResponse.ok) {
-
-            throw new Error(
-                getAPIError(
-                    weatherResponse.status,
-                    weatherData
-                )
-            );
-
-        }
-
-
-        /* Forecast */
-
-        const forecastURL =
-            `${FORECAST_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
-
-        const forecastResponse =
-            await fetch(forecastURL);
-
-
-        const forecastData =
-            await forecastResponse.json();
-
-
-        if (!forecastResponse.ok) {
-
-            throw new Error(
-                getAPIError(
-                    forecastResponse.status,
-                    forecastData
-                )
-            );
-
-        }
-
-
-        /* Display */
-
-        displayWeather(
-            weatherData,
-            forecastData
-        );
-
-
-        /* Air Quality */
-
-        getAirQuality(
-            latitude,
-            longitude
-        );
-
-
-        /* Save City */
-
-        saveRecentSearch(
-            weatherData.name
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Location Weather Error:",
-            error
-        );
-
 
         showError(
             error.message ||
@@ -494,7 +285,7 @@ async function getWeatherByCoordinates(
 
 
 /* =========================================================
-   DISPLAY WEATHER
+   7. DISPLAY CURRENT WEATHER
 ========================================================= */
 
 function displayWeather(
@@ -502,13 +293,13 @@ function displayWeather(
     forecastData
 ) {
 
-    /* City */
+    /* CITY */
 
     cityName.textContent =
         `${data.name}, ${data.sys.country}`;
 
 
-    /* Date */
+    /* DATE */
 
     currentDate.textContent =
         new Date().toLocaleDateString(
@@ -522,42 +313,46 @@ function displayWeather(
         );
 
 
-    /* Temperature */
+    /* TEMPERATURE */
 
     temperature.textContent =
         Math.round(data.main.temp);
 
 
-    /* Feels Like */
+    /* FEELS LIKE */
 
     feelsLike.textContent =
         `${Math.round(data.main.feels_like)}°C`;
 
 
-    /* Description */
+    /* DESCRIPTION */
 
     weatherDescription.textContent =
-        data.weather[0].description;
+        capitalize(
+            data.weather[0].description
+        );
 
 
-    /* Humidity */
+    /* HUMIDITY */
 
     humidity.textContent =
         `${data.main.humidity}%`;
 
 
-    /* Wind */
+    /* WIND */
 
-    const windSpeed =
+    const windKmh =
         data.wind.speed * 3.6;
 
     wind.textContent =
-        `${Math.round(windSpeed)} km/h`;
+        `${Math.round(windKmh)} km/h`;
 
 
-    /* Visibility */
+    /* VISIBILITY */
 
-    if (data.visibility) {
+    if (
+        typeof data.visibility === "number"
+    ) {
 
         visibility.textContent =
             `${(data.visibility / 1000).toFixed(1)} km`;
@@ -570,13 +365,13 @@ function displayWeather(
     }
 
 
-    /* Pressure */
+    /* PRESSURE */
 
     pressure.textContent =
         `${data.main.pressure} hPa`;
 
 
-    /* Sunrise */
+    /* SUNRISE */
 
     sunrise.textContent =
         formatTime(
@@ -585,7 +380,7 @@ function displayWeather(
         );
 
 
-    /* Sunset */
+    /* SUNSET */
 
     sunset.textContent =
         formatTime(
@@ -594,23 +389,23 @@ function displayWeather(
         );
 
 
-    /* Weather Icon */
+    /* WEATHER ICON */
 
-    updateWeatherIcon(
+    setWeatherIcon(
         data.weather[0].main
     );
 
 
-    /* Background */
+    /* CHANGE BACKGROUND */
 
-    updateBackground(
+    changeBackground(
         data.weather[0].main
     );
 
 
-    /* Forecast */
+    /* FORECAST */
 
-    generateForecast(
+    createForecast(
         forecastData
     );
 
@@ -618,10 +413,10 @@ function displayWeather(
 
 
 /* =========================================================
-   WEATHER ICON
+   8. WEATHER ICON
 ========================================================= */
 
-function updateWeatherIcon(condition) {
+function setWeatherIcon(condition) {
 
     const icons = {
 
@@ -681,22 +476,22 @@ function updateWeatherIcon(condition) {
 
 
 /* =========================================================
-   GENERATE FORECAST
+   9. CREATE 5 DAY FORECAST
 ========================================================= */
 
-function generateForecast(data) {
+function createForecast(data) {
 
     forecastGrid.innerHTML = "";
 
 
+    const dailyForecast = {};
+
+
     /*
-     * OpenWeather gives data every 3 hours.
-     *
-     * We select one forecast per day.
-     */
+       OpenWeather returns forecast every 3 hours.
 
-    const days = {};
-
+       We select one forecast for each date.
+    */
 
     data.list.forEach(function (item) {
 
@@ -708,45 +503,54 @@ function generateForecast(data) {
 
 
         /*
-         * Prefer 12 PM forecast.
-         */
+           Prefer the 12:00 PM forecast.
+        */
 
         if (
-            !days[date] ||
+            !dailyForecast[date] ||
             time === "12:00:00"
         ) {
 
-            days[date] = item;
-
+            dailyForecast[date] =
+                item;
         }
 
     });
 
 
-    const forecastDays =
-        Object.values(days).slice(0, 5);
+    const days =
+        Object.values(dailyForecast)
+            .slice(0, 5);
 
 
-    forecastDays.forEach(function (day, index) {
+    days.forEach(function (item, index) {
 
         const date =
-            new Date(day.dt * 1000);
+            new Date(item.dt * 1000);
 
 
-        const dayName =
-            index === 0
-                ? "Today"
-                : date.toLocaleDateString(
+        let dayName;
+
+
+        if (index === 0) {
+
+            dayName = "Today";
+
+        } else {
+
+            dayName =
+                date.toLocaleDateString(
                     "en-US",
                     {
                         weekday: "short"
                     }
                 );
+        }
 
 
         const icon =
             getForecastIcon(
-                day.weather[0].main
+                item.weather[0].main
             );
 
 
@@ -760,19 +564,17 @@ function generateForecast(data) {
 
         card.innerHTML = `
 
-            <span>
-                ${dayName}
-            </span>
+            <span>${dayName}</span>
 
             <i class="${icon}"></i>
 
             <strong>
-                ${Math.round(day.main.temp)}°
+                ${Math.round(item.main.temp)}°
             </strong>
 
             <small>
                 ${capitalize(
-                    day.weather[0].description
+                    item.weather[0].description
                 )}
             </small>
 
@@ -787,7 +589,7 @@ function generateForecast(data) {
 
 
 /* =========================================================
-   FORECAST ICON
+   10. FORECAST ICON
 ========================================================= */
 
 function getForecastIcon(condition) {
@@ -815,8 +617,23 @@ function getForecastIcon(condition) {
         Mist:
             "fa-solid fa-smog",
 
+        Smoke:
+            "fa-solid fa-smog",
+
+        Haze:
+            "fa-solid fa-smog",
+
+        Dust:
+            "fa-solid fa-smog",
+
         Fog:
-            "fa-solid fa-smog"
+            "fa-solid fa-smog",
+
+        Squall:
+            "fa-solid fa-wind",
+
+        Tornado:
+            "fa-solid fa-tornado"
 
     };
 
@@ -830,7 +647,7 @@ function getForecastIcon(condition) {
 
 
 /* =========================================================
-   AIR QUALITY
+   11. AIR QUALITY
 ========================================================= */
 
 async function getAirQuality(
@@ -854,16 +671,20 @@ async function getAirQuality(
 
         if (!response.ok) {
 
-            console.warn(
-                "Air quality unavailable:",
-                data
-            );
+            aqValue.textContent = "--";
+            aqStatus.textContent = "Unavailable";
 
-            aqValue.textContent =
-                "--";
+            return;
+        }
 
-            aqStatus.textContent =
-                "Unavailable";
+
+        if (
+            !data.list ||
+            !data.list.length
+        ) {
+
+            aqValue.textContent = "--";
+            aqStatus.textContent = "Unavailable";
 
             return;
         }
@@ -872,16 +693,6 @@ async function getAirQuality(
         const aqi =
             data.list[0].main.aqi;
 
-
-        /*
-         * OpenWeather AQI:
-         *
-         * 1 = Good
-         * 2 = Fair
-         * 3 = Moderate
-         * 4 = Poor
-         * 5 = Very Poor
-         */
 
         const status = {
 
@@ -894,11 +705,6 @@ async function getAirQuality(
         };
 
 
-        /*
-         * Convert 1-5 into
-         * simple 0-100 display.
-         */
-
         aqValue.textContent =
             aqi * 20;
 
@@ -910,9 +716,12 @@ async function getAirQuality(
     } catch (error) {
 
         console.warn(
-            "Air quality error:",
+            "Air Quality Error:",
             error
         );
+
+        aqValue.textContent = "--";
+        aqStatus.textContent = "Unavailable";
 
     }
 
@@ -920,27 +729,225 @@ async function getAirQuality(
 
 
 /* =========================================================
-   FORMAT TIME
+   12. MY LOCATION
+========================================================= */
+
+locationBtn.addEventListener(
+    "click",
+    function () {
+
+        if (!hasValidAPIKey()) {
+            return;
+        }
+
+
+        if (!navigator.geolocation) {
+
+            showError(
+                "Geolocation is not supported by your browser."
+            );
+
+            return;
+        }
+
+
+        showLoading();
+        hideError();
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            function (position) {
+
+                const latitude =
+                    position.coords.latitude;
+
+                const longitude =
+                    position.coords.longitude;
+
+
+                getWeatherByCoordinates(
+                    latitude,
+                    longitude
+                );
+
+            },
+
+            function (error) {
+
+                hideLoading();
+
+
+                if (error.code === 1) {
+
+                    showError(
+                        "Location permission denied. Please allow location access."
+                    );
+
+                } else if (error.code === 2) {
+
+                    showError(
+                        "Unable to determine your location."
+                    );
+
+                } else if (error.code === 3) {
+
+                    showError(
+                        "Location request timed out."
+                    );
+
+                } else {
+
+                    showError(
+                        "Unable to get your location."
+                    );
+                }
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+
+        );
+
+    }
+);
+
+
+/* =========================================================
+   13. WEATHER BY COORDINATES
+========================================================= */
+
+async function getWeatherByCoordinates(
+    latitude,
+    longitude
+) {
+
+    try {
+
+        /* CURRENT WEATHER */
+
+        const weatherURL =
+            `${WEATHER_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+
+
+        const weatherResponse =
+            await fetch(weatherURL);
+
+
+        const weatherData =
+            await weatherResponse.json();
+
+
+        if (!weatherResponse.ok) {
+
+            throw new Error(
+                getErrorMessage(
+                    weatherResponse.status,
+                    weatherData
+                )
+            );
+        }
+
+
+        /* FORECAST */
+
+        const forecastURL =
+            `${FORECAST_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+
+
+        const forecastResponse =
+            await fetch(forecastURL);
+
+
+        const forecastData =
+            await forecastResponse.json();
+
+
+        if (!forecastResponse.ok) {
+
+            throw new Error(
+                getErrorMessage(
+                    forecastResponse.status,
+                    forecastData
+                )
+            );
+        }
+
+
+        /* DISPLAY */
+
+        displayWeather(
+            weatherData,
+            forecastData
+        );
+
+
+        /* AIR */
+
+        getAirQuality(
+            latitude,
+            longitude
+        );
+
+
+        /* SAVE */
+
+        saveRecentSearch(
+            weatherData.name
+        );
+
+
+        inputBox.value =
+            weatherData.name;
+
+
+    } catch (error) {
+
+        console.error(
+            "Location Error:",
+            error
+        );
+
+
+        showError(
+            error.message ||
+            "Unable to get location weather."
+        );
+
+    } finally {
+
+        hideLoading();
+
+    }
+
+}
+
+
+/* =========================================================
+   14. FORMAT TIME
 ========================================================= */
 
 function formatTime(
     timestamp,
-    timezone
+    timezoneOffset
 ) {
 
     /*
-     * OpenWeather timestamp is UTC.
-     *
-     * timezone is seconds from UTC.
-     */
+       OpenWeather gives timestamp in UTC.
+       timezoneOffset is in seconds.
+    */
 
-    const localDate =
+    const date =
         new Date(
-            (timestamp + timezone) * 1000
+            (timestamp + timezoneOffset) * 1000
         );
 
 
-    return localDate.toLocaleTimeString(
+    return date.toLocaleTimeString(
         "en-US",
         {
             timeZone: "UTC",
@@ -953,10 +960,109 @@ function formatTime(
 
 
 /* =========================================================
-   DYNAMIC BACKGROUND
+   15. RECENT SEARCHES
 ========================================================= */
 
-function updateBackground(condition) {
+function saveRecentSearch(city) {
+
+    let searches =
+        JSON.parse(
+            localStorage.getItem(
+                "skycastSearches"
+            )
+        ) || [];
+
+
+    searches =
+        searches.filter(function (item) {
+
+            return (
+                item.toLowerCase() !==
+                city.toLowerCase()
+            );
+
+        });
+
+
+    searches.unshift(city);
+
+
+    searches =
+        searches.slice(0, 5);
+
+
+    localStorage.setItem(
+        "skycastSearches",
+        JSON.stringify(searches)
+    );
+
+
+    displayRecentSearches();
+
+}
+
+
+/* =========================================================
+   16. DISPLAY RECENT SEARCHES
+========================================================= */
+
+function displayRecentSearches() {
+
+    if (!recentSearches) {
+        return;
+    }
+
+
+    const searches =
+        JSON.parse(
+            localStorage.getItem(
+                "skycastSearches"
+            )
+        ) || [];
+
+
+    recentSearches.innerHTML = "";
+
+
+    searches.forEach(function (city) {
+
+        const button =
+            document.createElement("button");
+
+
+        button.innerHTML =
+            `<i class="fa-solid fa-clock"></i> ${escapeHTML(city)}`;
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                inputBox.value =
+                    city;
+
+                getWeatherByCity(
+                    city
+                );
+
+            }
+        );
+
+
+        recentSearches.appendChild(
+            button
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   17. CHANGE BACKGROUND
+========================================================= */
+
+function changeBackground(condition) {
 
     const backgrounds = {
 
@@ -1055,145 +1161,50 @@ function updateBackground(condition) {
 
 
 /* =========================================================
-   RECENT SEARCHES
-========================================================= */
-
-function saveRecentSearch(city) {
-
-    let searches =
-        JSON.parse(
-            localStorage.getItem(
-                "skycastSearches"
-            )
-        ) || [];
-
-
-    /*
-     * Remove duplicate
-     */
-
-    searches =
-        searches.filter(function (item) {
-
-            return (
-                item.toLowerCase() !==
-                city.toLowerCase()
-            );
-
-        });
-
-
-    /*
-     * Add newest first
-     */
-
-    searches.unshift(city);
-
-
-    /*
-     * Only keep last 5
-     */
-
-    searches =
-        searches.slice(0, 5);
-
-
-    localStorage.setItem(
-        "skycastSearches",
-        JSON.stringify(searches)
-    );
-
-
-    renderRecentSearches();
-
-}
-
-
-/* =========================================================
-   SHOW RECENT SEARCHES
-========================================================= */
-
-function renderRecentSearches() {
-
-    const searches =
-        JSON.parse(
-            localStorage.getItem(
-                "skycastSearches"
-            )
-        ) || [];
-
-
-    recentSearches.innerHTML = "";
-
-
-    searches.forEach(function (city) {
-
-        const button =
-            document.createElement("button");
-
-
-        button.innerHTML =
-            `<i class="fa-solid fa-clock"></i> ${city}`;
-
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                inputBox.value =
-                    city;
-
-                getWeatherByCity(
-                    city
-                );
-
-            }
-        );
-
-
-        recentSearches.appendChild(
-            button
-        );
-
-    });
-
-}
-
-
-/* =========================================================
-   LOADING
+   18. LOADING
 ========================================================= */
 
 function showLoading() {
 
-    loading.style.display =
-        "flex";
+    if (loading) {
+        loading.style.display = "flex";
+    }
 
-    weatherContent.style.display =
-        "none";
+    if (weatherContent) {
+        weatherContent.style.display = "none";
+    }
 
 }
 
 
 function hideLoading() {
 
-    loading.style.display =
-        "none";
+    if (loading) {
+        loading.style.display = "none";
+    }
 
-    weatherContent.style.display =
-        "grid";
+    if (weatherContent) {
+        weatherContent.style.display = "grid";
+    }
 
 }
 
 
 /* =========================================================
-   ERROR
+   19. ERROR
 ========================================================= */
 
 function showError(message) {
 
+    if (!errorBox) {
+        alert(message);
+        return;
+    }
+
+
     errorMessage.textContent =
         message;
+
 
     errorBox.style.display =
         "flex";
@@ -1203,6 +1214,11 @@ function showError(message) {
 
 function hideError() {
 
+    if (!errorBox) {
+        return;
+    }
+
+
     errorBox.style.display =
         "none";
 
@@ -1210,10 +1226,10 @@ function hideError() {
 
 
 /* =========================================================
-   API ERROR MESSAGE
+   20. API ERROR HANDLING
 ========================================================= */
 
-function getAPIError(
+function getErrorMessage(
     status,
     data
 ) {
@@ -1221,7 +1237,7 @@ function getAPIError(
     if (status === 401) {
 
         return (
-            "Invalid API key. Check your OpenWeatherMap API key."
+            "Invalid API key. Check your OpenWeather API key. If you just created it, wait for the key to activate."
         );
 
     }
@@ -1230,7 +1246,7 @@ function getAPIError(
     if (status === 404) {
 
         return (
-            "City not found. Please check the spelling."
+            "City not found. Please check the city spelling and try again."
         );
 
     }
@@ -1239,7 +1255,7 @@ function getAPIError(
     if (status === 429) {
 
         return (
-            "Too many requests. Please try again later."
+            "Too many requests. Please wait a moment and try again."
         );
 
     }
@@ -1249,7 +1265,7 @@ function getAPIError(
 
         return (
             data.message ||
-            "Invalid request."
+            "Invalid weather request."
         );
 
     }
@@ -1258,7 +1274,7 @@ function getAPIError(
     if (status >= 500) {
 
         return (
-            "Weather server error. Please try again later."
+            "OpenWeather server error. Please try again later."
         );
 
     }
@@ -1266,14 +1282,14 @@ function getAPIError(
 
     return (
         data.message ||
-        `Weather request failed (${status}).`
+        `Weather request failed. Error code: ${status}`
     );
 
 }
 
 
 /* =========================================================
-   CAPITALIZE
+   21. CAPITALIZE TEXT
 ========================================================= */
 
 function capitalize(text) {
@@ -1281,6 +1297,7 @@ function capitalize(text) {
     if (!text) {
         return "";
     }
+
 
     return (
         text.charAt(0).toUpperCase() +
@@ -1291,25 +1308,34 @@ function capitalize(text) {
 
 
 /* =========================================================
-   INITIALIZE
+   22. BASIC HTML ESCAPE
 ========================================================= */
 
-renderRecentSearches();
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   23. INITIALIZE APP
+========================================================= */
+
+displayRecentSearches();
 
 
 /*
- * IMPORTANT:
- *
- * We intentionally DON'T automatically
- * search for a city here.
- *
- * User searches manually.
- */
+   Do NOT automatically call weather here.
+   The user can search for any city.
+*/
 
-if (!checkAPIKey()) {
-
-    console.log(
-        "SkyCast: Please add your OpenWeatherMap API key."
-    );
-
-}
+console.log(
+    "SkyCast Weather App Loaded Successfully."
+);
