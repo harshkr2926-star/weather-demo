@@ -1,41 +1,77 @@
-# Weather_webApp
+# 🌤️ SkyCast — Smart Weather Dashboard
 
-## I used open weather API to fetch data 
+SkyCast is a modern, responsive weather dashboard that provides real-time weather information for cities around the world.
 
-### This  web project done in html,css ,js
+The application uses the **OpenWeather API** to display current weather conditions, forecasts, air quality, and other useful weather information in a beautiful interface.
 
-#### Web link 
+---
 
- https://sachinprajapati8604.github.io/Weather_webApp/
- 
- #### netlify link
- 
- https://spweather.netlify.app/
- 
-### Features of the project.
+## ✨ Features
 
-* It provide dynamic weather data like temp, min max temp etc.
-* Dynamic background images change according to weather status.
-* Dynamic weather icon change according to weather status.
-* It provide basic information like feels like temperature,humidity,pressure,wind speed.
-* It will not accept empty input.
-* it will give you  alert if city name not matched with api  data.
-* a good  ux/ui 
+- 🌡️ Real-time temperature
+- 🔄 Celsius / Fahrenheit unit switching
+- 🔍 Search weather by city
+- 📍 Get weather using current location
+- 🌤️ Dynamic weather icons
+- 🌧️ Rain probability
+- 💧 Humidity information
+- 💨 Wind speed and direction
+- 👁️ Visibility
+- 📊 Atmospheric pressure
+- 🌅 Sunrise and sunset times
+- 🌫️ Air Quality Index (AQI)
+- 🕐 Hourly forecast
+- 📅 5-day weather forecast
+- 🔎 Recent city searches
+- 🌈 Dynamic background based on weather conditions
+- 📱 Responsive design
+- ⚡ Loading and error states
 
+---
 
-### Snapshot
+## 🖥️ Preview
 
-* Default 
-<img src="ss/demo1.png" width="100%">
+SkyCast has a modern weather-dashboard design with:
 
-* when you entered any valid city
- <img src="ss/demo.png" width="100%">
+- Dark glassmorphism UI
+- Blue gradient background
+- Weather cards
+- Search interface
+- Weather statistics
+- Forecast cards
+- Responsive layout
 
-* when you did'nt entered anything 
- <img src="ss/empty.png" width="100%">
+---
 
-* when entered city did'nt matched with data
- <img src="ss/bad.png" width="100%">
+## 🛠️ Technologies Used
 
+### Frontend
 
+- HTML5
+- CSS3
+- JavaScript (ES6+)
 
+### APIs
+
+- OpenWeather Current Weather API
+- OpenWeather 5-Day Forecast API
+- OpenWeather Air Pollution API
+
+### Libraries
+
+- Font Awesome
+- Google Fonts
+  - Inter
+  - Outfit
+
+---
+
+## 📁 Project Structure
+
+```text
+SkyCast/
+│
+├── index.html
+├── style.css
+├── script.js
+└── README.md
