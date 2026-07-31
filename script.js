@@ -1,25 +1,17 @@
 /* =========================================================
    SKYCAST WEATHER APP
-   COMPLETE CORRECTED script.js
+   CORRECTED VERSION
+   Celsius / Fahrenheit switching included
 ========================================================= */
 
 
 /* =========================================================
-   1. API KEY
+   1. API
 ========================================================= */
 
-/*
-   GET YOUR KEY FROM:
-   https://openweathermap.org/api
-
-   Replace ONLY the text inside the quotes.
-
-   Example:
-   const API_KEY = "abc123xyz...";
-*/
-
+// IMPORTANT:
+// Put your NEW OpenWeather API key here.
 const API_KEY = "a6ea71a71294e845a6d055fb92a11f42";
-
 
 const WEATHER_API =
     "https://api.openweathermap.org/data/2.5/weather";
@@ -32,18 +24,42 @@ const AIR_API =
 
 
 /* =========================================================
-   2. HTML ELEMENTS
+   2. GLOBAL VARIABLES
 ========================================================= */
 
-const inputBox = document.getElementById("input-box");
-const searchBtn = document.getElementById("search-btn");
-const locationBtn = document.getElementById("locationBtn");
+let currentUnit = "celsius";
 
-const loading = document.getElementById("loading");
-const weatherContent = document.getElementById("weatherContent");
+let currentWeatherData = null;
+let currentForecastData = null;
 
-const errorBox = document.getElementById("errorBox");
-const errorMessage = document.getElementById("errorMessage");
+
+/* =========================================================
+   3. HTML ELEMENTS
+========================================================= */
+
+const inputBox =
+    document.getElementById("input-box");
+
+const searchBtn =
+    document.getElementById("search-btn");
+
+const locationBtn =
+    document.getElementById("locationBtn");
+
+const loading =
+    document.getElementById("loading");
+
+const weatherContent =
+    document.getElementById("weatherContent");
+
+const errorBox =
+    document.getElementById("errorBox");
+
+const errorMessage =
+    document.getElementById("errorMessage");
+
+const closeError =
+    document.getElementById("closeError");
 
 const recentSearches =
     document.getElementById("recentSearches");
@@ -93,20 +109,141 @@ const aqValue =
 const aqStatus =
     document.getElementById("aqStatus");
 
+const temperatureHighLow =
+    document.getElementById("temperatureHighLow");
+
+const rainChance =
+    document.getElementById("rainChance");
+
+const hourlyGrid =
+    document.getElementById("hourlyGrid");
+
+const uvValue =
+    document.getElementById("uvValue");
+
+const uvText =
+    document.getElementById("uvText");
+
+const precipValue =
+    document.getElementById("precipValue");
+
+const windDirection =
+    document.getElementById("windDirection");
+
+const windDetails =
+    document.getElementById("windDetails");
+
 
 /* =========================================================
-   3. CHECK API KEY
+   4. UNIT BUTTONS
+========================================================= */
+
+const unitButtons =
+    document.querySelectorAll(".unit-btn");
+
+
+unitButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+        const selectedUnit =
+            button.dataset.unit;
+
+        if (selectedUnit === currentUnit) {
+            return;
+        }
+
+        currentUnit =
+            selectedUnit;
+
+        updateUnitButtons();
+
+        if (
+            currentWeatherData &&
+            currentForecastData
+        ) {
+
+            displayWeather(
+                currentWeatherData,
+                currentForecastData
+            );
+
+        }
+
+    });
+
+});
+
+
+/* =========================================================
+   5. UPDATE UNIT BUTTON UI
+========================================================= */
+
+function updateUnitButtons() {
+
+    unitButtons.forEach(function (button) {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.unit === currentUnit
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   6. TEMPERATURE CONVERSION
+========================================================= */
+
+function celsiusToFahrenheit(celsius) {
+
+    return (
+        (celsius * 9 / 5) + 32
+    );
+
+}
+
+
+function formatTemperature(celsius) {
+
+    if (currentUnit === "fahrenheit") {
+
+        return Math.round(
+            celsiusToFahrenheit(celsius)
+        );
+
+    }
+
+    return Math.round(celsius);
+
+}
+
+
+function getTemperatureUnit() {
+
+    return currentUnit === "fahrenheit"
+        ? "°F"
+        : "°C";
+
+}
+
+
+/* =========================================================
+   7. API KEY CHECK
 ========================================================= */
 
 function hasValidAPIKey() {
 
     if (
         !API_KEY ||
+        API_KEY === "YOUR_NEW_OPENWEATHER_API_KEY" ||
         API_KEY === "PASTE_YOUR_OPENWEATHER_API_KEY_HERE"
     ) {
 
         showError(
-            "OpenWeather API key is missing. Open script.js and paste your real API key."
+            "Please add your OpenWeather API key inside script.js."
         );
 
         return false;
@@ -117,52 +254,93 @@ function hasValidAPIKey() {
 
 
 /* =========================================================
-   4. SEARCH BUTTON
+   8. SEARCH BUTTON
 ========================================================= */
 
-searchBtn.addEventListener("click", function () {
+searchBtn.addEventListener(
+    "click",
+    function () {
 
-    const city = inputBox.value.trim();
-
-    if (city === "") {
-
-        showError("Please enter a city name.");
-
-        inputBox.focus();
-
-        return;
-    }
-
-    getWeatherByCity(city);
-
-});
-
-
-/* =========================================================
-   5. ENTER KEY
-========================================================= */
-
-inputBox.addEventListener("keydown", function (event) {
-
-    if (event.key === "Enter") {
-
-        const city = inputBox.value.trim();
+        const city =
+            inputBox.value.trim();
 
         if (city === "") {
 
-            showError("Please enter a city name.");
+            showError(
+                "Please enter a city name."
+            );
+
+            inputBox.focus();
 
             return;
         }
 
         getWeatherByCity(city);
+
     }
+);
+
+
+/* =========================================================
+   9. ENTER KEY SEARCH
+========================================================= */
+
+inputBox.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            const city =
+                inputBox.value.trim();
+
+            if (city === "") {
+
+                showError(
+                    "Please enter a city name."
+                );
+
+                return;
+            }
+
+            getWeatherByCity(city);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   10. POPULAR CITY BUTTONS
+========================================================= */
+
+const popularCities =
+    document.querySelectorAll(".popular-city");
+
+
+popularCities.forEach(function (button) {
+
+    button.addEventListener(
+        "click",
+        function () {
+
+            const city =
+                button.dataset.city;
+
+            inputBox.value =
+                city;
+
+            getWeatherByCity(city);
+
+        }
+    );
 
 });
 
 
 /* =========================================================
-   6. GET WEATHER BY CITY
+   11. GET WEATHER BY CITY
 ========================================================= */
 
 async function getWeatherByCity(city) {
@@ -176,9 +354,7 @@ async function getWeatherByCity(city) {
 
     try {
 
-        /* -----------------------------------------------
-           CURRENT WEATHER
-        ------------------------------------------------ */
+        /* CURRENT WEATHER */
 
         const weatherURL =
             `${WEATHER_API}?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
@@ -189,11 +365,6 @@ async function getWeatherByCity(city) {
         const weatherData =
             await weatherResponse.json();
 
-
-        /* -----------------------------------------------
-           CHECK CURRENT WEATHER RESPONSE
-        ------------------------------------------------ */
-
         if (!weatherResponse.ok) {
 
             throw new Error(
@@ -202,12 +373,11 @@ async function getWeatherByCity(city) {
                     weatherData
                 )
             );
+
         }
 
 
-        /* -----------------------------------------------
-           5 DAY FORECAST
-        ------------------------------------------------ */
+        /* FORECAST */
 
         const forecastURL =
             `${FORECAST_API}?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
@@ -218,7 +388,6 @@ async function getWeatherByCity(city) {
         const forecastData =
             await forecastResponse.json();
 
-
         if (!forecastResponse.ok) {
 
             throw new Error(
@@ -227,12 +396,20 @@ async function getWeatherByCity(city) {
                     forecastData
                 )
             );
+
         }
 
 
-        /* -----------------------------------------------
-           SHOW WEATHER
-        ------------------------------------------------ */
+        /* SAVE DATA */
+
+        currentWeatherData =
+            weatherData;
+
+        currentForecastData =
+            forecastData;
+
+
+        /* DISPLAY */
 
         displayWeather(
             weatherData,
@@ -240,9 +417,7 @@ async function getWeatherByCity(city) {
         );
 
 
-        /* -----------------------------------------------
-           AIR QUALITY
-        ------------------------------------------------ */
+        /* AIR QUALITY */
 
         getAirQuality(
             weatherData.coord.lat,
@@ -250,9 +425,7 @@ async function getWeatherByCity(city) {
         );
 
 
-        /* -----------------------------------------------
-           SAVE CITY
-        ------------------------------------------------ */
+        /* SAVE SEARCH */
 
         saveRecentSearch(
             weatherData.name
@@ -285,13 +458,17 @@ async function getWeatherByCity(city) {
 
 
 /* =========================================================
-   7. DISPLAY CURRENT WEATHER
+   12. DISPLAY WEATHER
 ========================================================= */
 
 function displayWeather(
     data,
     forecastData
 ) {
+
+    const unit =
+        getTemperatureUnit();
+
 
     /* CITY */
 
@@ -316,13 +493,30 @@ function displayWeather(
     /* TEMPERATURE */
 
     temperature.textContent =
-        Math.round(data.main.temp);
+        formatTemperature(
+            data.main.temp
+        );
+
+
+    /* UNIT */
+
+    const temperatureUnitElement =
+        document.querySelector(
+            ".temperature sup"
+        );
+
+    if (temperatureUnitElement) {
+
+        temperatureUnitElement.textContent =
+            unit;
+
+    }
 
 
     /* FEELS LIKE */
 
     feelsLike.textContent =
-        `${Math.round(data.main.feels_like)}°C`;
+        `${formatTemperature(data.main.feels_like)}${unit}`;
 
 
     /* DESCRIPTION */
@@ -346,6 +540,26 @@ function displayWeather(
 
     wind.textContent =
         `${Math.round(windKmh)} km/h`;
+
+
+    if (windDetails) {
+
+        windDetails.textContent =
+            `${Math.round(windKmh)} km/h`;
+
+    }
+
+
+    /* WIND DIRECTION */
+
+    if (windDirection) {
+
+        windDirection.textContent =
+            getWindDirection(
+                data.wind.deg
+            );
+
+    }
 
 
     /* VISIBILITY */
@@ -389,14 +603,14 @@ function displayWeather(
         );
 
 
-    /* WEATHER ICON */
+    /* ICON */
 
     setWeatherIcon(
         data.weather[0].main
     );
 
 
-    /* CHANGE BACKGROUND */
+    /* BACKGROUND */
 
     changeBackground(
         data.weather[0].main
@@ -409,11 +623,187 @@ function displayWeather(
         forecastData
     );
 
+
+    /* HOURLY */
+
+    createHourlyForecast(
+        forecastData
+    );
+
+
+    /* HIGH / LOW */
+
+    updateHighLow(
+        forecastData
+    );
+
+
+    /* RAIN */
+
+    updateRainChance(
+        forecastData
+    );
+
+
+    /* PRECIPITATION */
+
+    if (precipValue) {
+
+        updateRainChance(
+            forecastData,
+            precipValue
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   8. WEATHER ICON
+   13. HIGH / LOW
+========================================================= */
+
+function updateHighLow(data) {
+
+    if (!temperatureHighLow) {
+        return;
+    }
+
+    const today =
+        data.list.slice(0, 8);
+
+    if (!today.length) {
+        return;
+    }
+
+    const temperatures =
+        today.map(function (item) {
+
+            return item.main.temp;
+
+        });
+
+    const high =
+        Math.max(...temperatures);
+
+    const low =
+        Math.min(...temperatures);
+
+    const unit =
+        getTemperatureUnit();
+
+    temperatureHighLow.textContent =
+        `${formatTemperature(low)}${unit} / ${formatTemperature(high)}${unit}`;
+
+}
+
+
+/* =========================================================
+   14. RAIN CHANCE
+========================================================= */
+
+function updateRainChance(
+    data,
+    targetElement = rainChance
+) {
+
+    if (!targetElement) {
+        return;
+    }
+
+    const items =
+        data.list.slice(0, 8);
+
+    if (!items.length) {
+        return;
+    }
+
+    const probabilities =
+        items.map(function (item) {
+
+            return (
+                (item.pop || 0) * 100
+            );
+
+        });
+
+    const highest =
+        Math.max(...probabilities);
+
+    targetElement.textContent =
+        `${Math.round(highest)}%`;
+
+}
+
+
+/* =========================================================
+   15. HOURLY FORECAST
+========================================================= */
+
+function createHourlyForecast(data) {
+
+    if (!hourlyGrid) {
+        return;
+    }
+
+    hourlyGrid.innerHTML = "";
+
+    const hours =
+        data.list.slice(0, 8);
+
+    hours.forEach(function (item, index) {
+
+        const time =
+            new Date(
+                item.dt * 1000
+            ).toLocaleTimeString(
+                "en-US",
+                {
+                    hour: "numeric",
+                    minute: "2-digit"
+                }
+            );
+
+        const icon =
+            getForecastIcon(
+                item.weather[0].main
+            );
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "hour-card";
+
+        card.innerHTML = `
+
+            <span>
+                ${index === 0 ? "Now" : time}
+            </span>
+
+            <i class="${icon}"></i>
+
+            <strong>
+                ${formatTemperature(item.main.temp)}°
+            </strong>
+
+            <small>
+                ${Math.round(
+                    item.pop * 100
+                )}% rain
+            </small>
+
+        `;
+
+        hourlyGrid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   16. WEATHER ICON
 ========================================================= */
 
 function setWeatherIcon(condition) {
@@ -467,7 +857,6 @@ function setWeatherIcon(condition) {
 
     };
 
-
     weatherIcon.className =
         icons[condition] ||
         "fa-solid fa-cloud-sun";
@@ -476,22 +865,18 @@ function setWeatherIcon(condition) {
 
 
 /* =========================================================
-   9. CREATE 5 DAY FORECAST
+   17. 5-DAY FORECAST
 ========================================================= */
 
 function createForecast(data) {
 
+    if (!forecastGrid) {
+        return;
+    }
+
     forecastGrid.innerHTML = "";
 
-
     const dailyForecast = {};
-
-
-    /*
-       OpenWeather returns forecast every 3 hours.
-
-       We select one forecast for each date.
-    */
 
     data.list.forEach(function (item) {
 
@@ -501,11 +886,6 @@ function createForecast(data) {
         const time =
             item.dt_txt.split(" ")[1];
 
-
-        /*
-           Prefer the 12:00 PM forecast.
-        */
-
         if (
             !dailyForecast[date] ||
             time === "12:00:00"
@@ -513,6 +893,7 @@ function createForecast(data) {
 
             dailyForecast[date] =
                 item;
+
         }
 
     });
@@ -526,15 +907,16 @@ function createForecast(data) {
     days.forEach(function (item, index) {
 
         const date =
-            new Date(item.dt * 1000);
-
+            new Date(
+                item.dt * 1000
+            );
 
         let dayName;
 
-
         if (index === 0) {
 
-            dayName = "Today";
+            dayName =
+                "Today";
 
         } else {
 
@@ -545,6 +927,7 @@ function createForecast(data) {
                         weekday: "short"
                     }
                 );
+
         }
 
 
@@ -557,19 +940,20 @@ function createForecast(data) {
         const card =
             document.createElement("div");
 
-
         card.className =
             "forecast-card";
 
 
         card.innerHTML = `
 
-            <span>${dayName}</span>
+            <span>
+                ${dayName}
+            </span>
 
             <i class="${icon}"></i>
 
             <strong>
-                ${Math.round(item.main.temp)}°
+                ${formatTemperature(item.main.temp)}°
             </strong>
 
             <small>
@@ -589,7 +973,7 @@ function createForecast(data) {
 
 
 /* =========================================================
-   10. FORECAST ICON
+   18. FORECAST ICON
 ========================================================= */
 
 function getForecastIcon(condition) {
@@ -637,7 +1021,6 @@ function getForecastIcon(condition) {
 
     };
 
-
     return (
         icons[condition] ||
         "fa-solid fa-cloud-sun"
@@ -647,7 +1030,7 @@ function getForecastIcon(condition) {
 
 
 /* =========================================================
-   11. AIR QUALITY
+   19. AIR QUALITY
 ========================================================= */
 
 async function getAirQuality(
@@ -660,39 +1043,41 @@ async function getAirQuality(
         const url =
             `${AIR_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
 
-
         const response =
             await fetch(url);
-
 
         const data =
             await response.json();
 
-
         if (!response.ok) {
 
-            aqValue.textContent = "--";
-            aqStatus.textContent = "Unavailable";
+            aqValue.textContent =
+                "--";
+
+            aqStatus.textContent =
+                "Unavailable";
 
             return;
-        }
 
+        }
 
         if (
             !data.list ||
             !data.list.length
         ) {
 
-            aqValue.textContent = "--";
-            aqStatus.textContent = "Unavailable";
+            aqValue.textContent =
+                "--";
+
+            aqStatus.textContent =
+                "Unavailable";
 
             return;
-        }
 
+        }
 
         const aqi =
             data.list[0].main.aqi;
-
 
         const status = {
 
@@ -704,14 +1089,11 @@ async function getAirQuality(
 
         };
 
-
         aqValue.textContent =
             aqi * 20;
 
-
         aqStatus.textContent =
             status[aqi] || "Unknown";
-
 
     } catch (error) {
 
@@ -720,8 +1102,11 @@ async function getAirQuality(
             error
         );
 
-        aqValue.textContent = "--";
-        aqStatus.textContent = "Unavailable";
+        aqValue.textContent =
+            "--";
+
+        aqStatus.textContent =
+            "Unavailable";
 
     }
 
@@ -729,7 +1114,7 @@ async function getAirQuality(
 
 
 /* =========================================================
-   12. MY LOCATION
+   20. MY LOCATION
 ========================================================= */
 
 locationBtn.addEventListener(
@@ -740,7 +1125,6 @@ locationBtn.addEventListener(
             return;
         }
 
-
         if (!navigator.geolocation) {
 
             showError(
@@ -750,10 +1134,8 @@ locationBtn.addEventListener(
             return;
         }
 
-
         showLoading();
         hideError();
-
 
         navigator.geolocation.getCurrentPosition(
 
@@ -765,7 +1147,6 @@ locationBtn.addEventListener(
                 const longitude =
                     position.coords.longitude;
 
-
                 getWeatherByCoordinates(
                     latitude,
                     longitude
@@ -776,7 +1157,6 @@ locationBtn.addEventListener(
             function (error) {
 
                 hideLoading();
-
 
                 if (error.code === 1) {
 
@@ -801,6 +1181,7 @@ locationBtn.addEventListener(
                     showError(
                         "Unable to get your location."
                     );
+
                 }
 
             },
@@ -818,7 +1199,7 @@ locationBtn.addEventListener(
 
 
 /* =========================================================
-   13. WEATHER BY COORDINATES
+   21. WEATHER BY COORDINATES
 ========================================================= */
 
 async function getWeatherByCoordinates(
@@ -828,19 +1209,14 @@ async function getWeatherByCoordinates(
 
     try {
 
-        /* CURRENT WEATHER */
-
         const weatherURL =
             `${WEATHER_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
 
         const weatherResponse =
             await fetch(weatherURL);
 
-
         const weatherData =
             await weatherResponse.json();
-
 
         if (!weatherResponse.ok) {
 
@@ -850,22 +1226,18 @@ async function getWeatherByCoordinates(
                     weatherData
                 )
             );
+
         }
 
-
-        /* FORECAST */
 
         const forecastURL =
             `${FORECAST_API}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
 
-
         const forecastResponse =
             await fetch(forecastURL);
 
-
         const forecastData =
             await forecastResponse.json();
-
 
         if (!forecastResponse.ok) {
 
@@ -875,10 +1247,16 @@ async function getWeatherByCoordinates(
                     forecastData
                 )
             );
+
         }
 
 
-        /* DISPLAY */
+        currentWeatherData =
+            weatherData;
+
+        currentForecastData =
+            forecastData;
+
 
         displayWeather(
             weatherData,
@@ -886,15 +1264,11 @@ async function getWeatherByCoordinates(
         );
 
 
-        /* AIR */
-
         getAirQuality(
             latitude,
             longitude
         );
 
-
-        /* SAVE */
 
         saveRecentSearch(
             weatherData.name
@@ -912,7 +1286,6 @@ async function getWeatherByCoordinates(
             error
         );
 
-
         showError(
             error.message ||
             "Unable to get location weather."
@@ -928,7 +1301,36 @@ async function getWeatherByCoordinates(
 
 
 /* =========================================================
-   14. FORMAT TIME
+   22. WIND DIRECTION
+========================================================= */
+
+function getWindDirection(degrees) {
+
+    if (typeof degrees !== "number") {
+        return "--";
+    }
+
+    const directions = [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+    ];
+
+    const index =
+        Math.round(degrees / 45) % 8;
+
+    return directions[index];
+
+}
+
+
+/* =========================================================
+   23. FORMAT TIME
 ========================================================= */
 
 function formatTime(
@@ -936,16 +1338,10 @@ function formatTime(
     timezoneOffset
 ) {
 
-    /*
-       OpenWeather gives timestamp in UTC.
-       timezoneOffset is in seconds.
-    */
-
     const date =
         new Date(
             (timestamp + timezoneOffset) * 1000
         );
-
 
     return date.toLocaleTimeString(
         "en-US",
@@ -960,7 +1356,7 @@ function formatTime(
 
 
 /* =========================================================
-   15. RECENT SEARCHES
+   24. RECENT SEARCHES
 ========================================================= */
 
 function saveRecentSearch(city) {
@@ -1003,7 +1399,7 @@ function saveRecentSearch(city) {
 
 
 /* =========================================================
-   16. DISPLAY RECENT SEARCHES
+   25. DISPLAY RECENT SEARCHES
 ========================================================= */
 
 function displayRecentSearches() {
@@ -1011,7 +1407,6 @@ function displayRecentSearches() {
     if (!recentSearches) {
         return;
     }
-
 
     const searches =
         JSON.parse(
@@ -1021,7 +1416,8 @@ function displayRecentSearches() {
         ) || [];
 
 
-    recentSearches.innerHTML = "";
+    recentSearches.innerHTML =
+        "";
 
 
     searches.forEach(function (city) {
@@ -1059,7 +1455,7 @@ function displayRecentSearches() {
 
 
 /* =========================================================
-   17. CHANGE BACKGROUND
+   26. BACKGROUND
 ========================================================= */
 
 function changeBackground(condition) {
@@ -1161,17 +1557,23 @@ function changeBackground(condition) {
 
 
 /* =========================================================
-   18. LOADING
+   27. LOADING
 ========================================================= */
 
 function showLoading() {
 
     if (loading) {
-        loading.style.display = "flex";
+
+        loading.style.display =
+            "flex";
+
     }
 
     if (weatherContent) {
-        weatherContent.style.display = "none";
+
+        weatherContent.style.display =
+            "none";
+
     }
 
 }
@@ -1180,31 +1582,38 @@ function showLoading() {
 function hideLoading() {
 
     if (loading) {
-        loading.style.display = "none";
+
+        loading.style.display =
+            "none";
+
     }
 
     if (weatherContent) {
-        weatherContent.style.display = "grid";
+
+        weatherContent.style.display =
+            "block";
+
     }
 
 }
 
 
 /* =========================================================
-   19. ERROR
+   28. ERROR
 ========================================================= */
 
 function showError(message) {
 
     if (!errorBox) {
-        alert(message);
-        return;
-    }
 
+        alert(message);
+
+        return;
+
+    }
 
     errorMessage.textContent =
         message;
-
 
     errorBox.style.display =
         "flex";
@@ -1218,15 +1627,24 @@ function hideError() {
         return;
     }
 
-
     errorBox.style.display =
         "none";
 
 }
 
 
+if (closeError) {
+
+    closeError.addEventListener(
+        "click",
+        hideError
+    );
+
+}
+
+
 /* =========================================================
-   20. API ERROR HANDLING
+   29. API ERROR
 ========================================================= */
 
 function getErrorMessage(
@@ -1237,7 +1655,7 @@ function getErrorMessage(
     if (status === 401) {
 
         return (
-            "Invalid API key. Check your OpenWeather API key. If you just created it, wait for the key to activate."
+            "Invalid API key. Check your OpenWeather API key. If you just created it, wait for activation."
         );
 
     }
@@ -1246,7 +1664,7 @@ function getErrorMessage(
     if (status === 404) {
 
         return (
-            "City not found. Please check the city spelling and try again."
+            "City not found. Please check the spelling."
         );
 
     }
@@ -1289,7 +1707,7 @@ function getErrorMessage(
 
 
 /* =========================================================
-   21. CAPITALIZE TEXT
+   30. CAPITALIZE
 ========================================================= */
 
 function capitalize(text) {
@@ -1297,7 +1715,6 @@ function capitalize(text) {
     if (!text) {
         return "";
     }
-
 
     return (
         text.charAt(0).toUpperCase() +
@@ -1308,7 +1725,7 @@ function capitalize(text) {
 
 
 /* =========================================================
-   22. BASIC HTML ESCAPE
+   31. ESCAPE HTML
 ========================================================= */
 
 function escapeHTML(text) {
@@ -1325,16 +1742,12 @@ function escapeHTML(text) {
 
 
 /* =========================================================
-   23. INITIALIZE APP
+   32. START APP
 ========================================================= */
 
+updateUnitButtons();
+
 displayRecentSearches();
-
-
-/*
-   Do NOT automatically call weather here.
-   The user can search for any city.
-*/
 
 console.log(
     "SkyCast Weather App Loaded Successfully."

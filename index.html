@@ -2,133 +2,579 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07152f"
+    >
+
+    <meta
+        name="description"
+        content="SkyCast modern weather dashboard"
+    >
 
     <title>SkyCast | Weather Dashboard</title>
 
-    <!-- Google Font -->
+
+    <!-- =====================================================
+         GOOGLE FONTS
+    ====================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         YOUR CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- Background -->
-    <div class="background">
-        <div class="orb orb-one"></div>
-        <div class="orb orb-two"></div>
-        <div class="orb orb-three"></div>
-    </div>
 
-    <div class="app">
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
 
-        <!-- ================= HEADER ================= -->
+<div class="background" aria-hidden="true">
 
-        <header class="top-header">
+    <div class="orb orb-one"></div>
 
-            <div class="brand">
+    <div class="orb orb-two"></div>
 
-                <div class="brand-icon">
-                    <i class="fa-solid fa-cloud-sun"></i>
-                </div>
+    <div class="orb orb-three"></div>
 
-                <div>
-                    <h1>SkyCast</h1>
-                    <p>Smart Weather Dashboard</p>
-                </div>
+</div>
+
+
+
+<!-- =========================================================
+     APP
+========================================================= -->
+
+<div class="app">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="top-header">
+
+
+        <!-- BRAND -->
+
+        <a
+            href="#"
+            class="brand"
+            aria-label="SkyCast home"
+        >
+
+            <div class="brand-icon">
+
+                <i class="fa-solid fa-cloud-sun"></i>
 
             </div>
 
-            <button class="location-btn" id="locationBtn">
-                <i class="fa-solid fa-location-crosshairs"></i>
-                <span>My Location</span>
-            </button>
 
-        </header>
+            <div>
+
+                <h1>SkyCast</h1>
+
+                <p>
+                    Smart Weather Dashboard
+                </p>
+
+            </div>
+
+        </a>
 
 
-        <!-- ================= SEARCH ================= -->
 
-        <section class="search-section">
+        <!-- HEADER ACTIONS -->
 
-            <div class="search-box">
+        <div class="header-actions">
 
-                <i class="fa-solid fa-magnifying-glass"></i>
 
-                <input
-                    type="text"
-                    id="input-box"
-                    placeholder="Search city..."
-                    autocomplete="off"
+            <!-- UNIT SWITCHER -->
+
+            <div
+                class="unit-switcher"
+                aria-label="Temperature unit"
+            >
+
+                <button
+                    type="button"
+                    class="unit-btn active"
+                    data-unit="celsius"
                 >
+                    °C
+                </button>
 
-                <button id="search-btn">
-                    Search
+
+                <button
+                    type="button"
+                    class="unit-btn"
+                    data-unit="fahrenheit"
+                >
+                    °F
                 </button>
 
             </div>
 
-            <div class="recent-searches" id="recentSearches"></div>
-
-        </section>
 
 
-        <!-- ================= ERROR ================= -->
+            <!-- LOCATION -->
 
-        <div class="error-box" id="errorBox">
+            <button
+                id="locationBtn"
+                class="location-btn"
+                type="button"
+            >
 
-            <i class="fa-solid fa-circle-exclamation"></i>
+                <i class="fa-solid fa-location-crosshairs"></i>
 
-            <div>
-                <strong>Something went wrong</strong>
-                <p id="errorMessage">
-                    Please try again.
-                </p>
+                <span>
+                    My Location
+                </span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero">
+
+
+        <div class="hero-content">
+
+
+            <div class="hero-badge">
+
+                <span></span>
+
+                LIVE WEATHER INTELLIGENCE
+
+            </div>
+
+
+            <h2>
+
+                Know your sky.<br>
+
+                <strong>
+                    Plan your day.
+                </strong>
+
+            </h2>
+
+
+            <p>
+
+                Beautiful real-time weather,
+                hourly forecasts, air quality
+                and daily outlook — all in one place.
+
+            </p>
+
+
+            <div class="hero-features">
+
+
+                <span>
+
+                    <i class="fa-solid fa-cloud-sun"></i>
+
+                    Live Forecast
+
+                </span>
+
+
+                <span>
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    Hourly Updates
+
+                </span>
+
+
+                <span>
+
+                    <i class="fa-solid fa-wind"></i>
+
+                    Air Quality
+
+                </span>
+
             </div>
 
         </div>
 
 
-        <!-- ================= LOADING ================= -->
 
-        <div class="loading" id="loading">
+        <!-- HERO IMAGE -->
 
-            <div class="spinner"></div>
+        <div class="hero-visual">
 
-            <p>Getting latest weather...</p>
+
+            <div class="hero-glow"></div>
+
+
+            <img
+                src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1000&q=85"
+                alt="Blue sky and clouds"
+            >
+
+
+            <div class="hero-floating-card">
+
+
+                <i class="fa-solid fa-cloud-sun"></i>
+
+
+                <div>
+
+                    <small>
+                        SKYCAST
+                    </small>
+
+                    <strong>
+                        Weather made simple
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <section
+        class="search-section"
+        aria-label="Weather search"
+    >
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+
+            <label
+                for="input-box"
+                class="sr-only"
+            >
+                Search for a city
+            </label>
+
+
+            <input
+                id="input-box"
+                type="search"
+                placeholder="Search city, state or country..."
+                autocomplete="off"
+                spellcheck="false"
+            >
+
+
+            <button
+                id="search-btn"
+                type="button"
+            >
+
+                Search
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
 
         </div>
 
 
-        <!-- ================= WEATHER CONTENT ================= -->
 
-        <main class="weather-content" id="weatherContent">
+        <!-- POPULAR CITIES -->
 
-            <!-- ================= MAIN WEATHER ================= -->
+        <div class="popular-searches">
 
-            <section class="main-card glass">
+
+            <span>
+                Popular:
+            </span>
+
+
+            <button
+                type="button"
+                class="popular-city"
+                data-city="London"
+            >
+                London
+            </button>
+
+
+            <button
+                type="button"
+                class="popular-city"
+                data-city="New York"
+            >
+                New York
+            </button>
+
+
+            <button
+                type="button"
+                class="popular-city"
+                data-city="Tokyo"
+            >
+                Tokyo
+            </button>
+
+
+            <button
+                type="button"
+                class="popular-city"
+                data-city="Dubai"
+            >
+                Dubai
+            </button>
+
+
+            <button
+                type="button"
+                class="popular-city"
+                data-city="Paris"
+            >
+                Paris
+            </button>
+
+        </div>
+
+
+
+        <!-- RECENT SEARCHES -->
+
+        <div
+            id="recentSearches"
+            class="recent-searches"
+            aria-label="Recent searches"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ERROR
+    ====================================================== -->
+
+    <div
+        id="errorBox"
+        class="error-box"
+        role="alert"
+        aria-live="polite"
+    >
+
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+
+        <div>
+
+            <strong>
+                Weather error
+            </strong>
+
+            <p id="errorMessage">
+                Please try again.
+            </p>
+
+        </div>
+
+
+        <button
+            id="closeError"
+            type="button"
+            aria-label="Close error"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <div
+        id="loading"
+        class="loading"
+        role="status"
+        aria-live="polite"
+    >
+
+        <div class="spinner"></div>
+
+
+        <div>
+
+            <strong>
+                Updating weather...
+            </strong>
+
+            <p>
+                Getting the latest forecast
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         WEATHER CONTENT
+    ====================================================== -->
+
+    <main
+        id="weatherContent"
+        class="weather-content"
+    >
+
+
+        <!-- =================================================
+             SECTION INTRO
+        ================================================== -->
+
+        <div class="section-intro">
+
+
+            <div>
+
+                <span class="section-kicker">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    YOUR WEATHER
+
+                </span>
+
+
+                <h2>
+                    Weather Overview
+                </h2>
+
+
+                <p>
+                    Live weather information
+                    for your selected location
+                </p>
+
+            </div>
+
+
+            <div class="live-data">
+
+                <span></span>
+
+                Live data
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             WEATHER GRID
+        ================================================== -->
+
+        <div class="weather-grid">
+
+
+            <!-- =================================================
+                 CURRENT WEATHER
+            ================================================== -->
+
+            <section
+                class="main-card glass"
+                aria-label="Current weather"
+            >
+
+
+                <!-- WEATHER HEADER -->
 
                 <div class="weather-header">
 
+
                     <div>
 
+
                         <span class="overline">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
                             CURRENT WEATHER
+
                         </span>
+
 
                         <h2 id="cityName">
                             Search a city
                         </h2>
+
 
                         <p id="currentDate">
                             --
@@ -136,41 +582,69 @@
 
                     </div>
 
+
                     <div class="live-status">
+
                         <span></span>
+
                         Live
+
                     </div>
 
                 </div>
 
 
-                <!-- Main Temperature -->
+
+                <!-- MAIN WEATHER -->
 
                 <div class="main-weather">
+
+
+                    <!-- ICON -->
 
                     <div class="weather-icon-box">
 
                         <i
                             id="weatherIcon"
-                            class="fa-solid fa-cloud-sun">
-                        </i>
+                            class="fa-solid fa-cloud-sun"
+                            aria-hidden="true"
+                        ></i>
 
                     </div>
 
+
+
+                    <!-- TEMPERATURE -->
+
                     <div class="temperature-section">
 
+
                         <div class="temperature">
-                            <span id="temperature">--</span>
-                            <sup>°C</sup>
+
+                            <span id="temperature">
+                                --
+                            </span>
+
+                            <sup>
+                                °C
+                            </sup>
+
                         </div>
+
 
                         <p id="weatherDescription">
                             Search for a city
                         </p>
 
+
                         <small>
+
                             Feels like
-                            <strong id="feelsLike">--°C</strong>
+
+                            <strong id="feelsLike">
+                                --°C
+                            </strong>
+
                         </small>
 
                     </div>
@@ -178,61 +652,189 @@
                 </div>
 
 
-                <!-- Stats -->
+
+                <!-- =================================================
+                     SUMMARY
+                ================================================== -->
+
+                <div class="weather-summary">
+
+
+                    <div class="summary-item">
+
+
+                        <div class="summary-icon">
+
+                            <i
+                                class="fa-solid fa-temperature-half"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                High / Low
+                            </span>
+
+                            <strong id="temperatureHighLow">
+                                -- / --
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="summary-item">
+
+
+                        <div class="summary-icon">
+
+                            <i
+                                class="fa-solid fa-cloud-rain"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Rain Chance
+                            </span>
+
+                            <strong id="rainChance">
+                                --%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STATS
+                ================================================== -->
 
                 <div class="stats">
+
+
+                    <!-- HUMIDITY -->
 
                     <div class="stat">
 
                         <div class="stat-icon blue">
-                            <i class="fa-solid fa-droplet"></i>
+
+                            <i
+                                class="fa-solid fa-droplet"
+                            ></i>
+
                         </div>
 
+
                         <div>
-                            <span>Humidity</span>
-                            <strong id="humidity">--%</strong>
+
+                            <span>
+                                Humidity
+                            </span>
+
+                            <strong id="humidity">
+                                --%
+                            </strong>
+
                         </div>
 
                     </div>
 
+
+
+                    <!-- WIND -->
 
                     <div class="stat">
 
                         <div class="stat-icon purple">
-                            <i class="fa-solid fa-wind"></i>
+
+                            <i
+                                class="fa-solid fa-wind"
+                            ></i>
+
                         </div>
 
+
                         <div>
-                            <span>Wind</span>
-                            <strong id="wind">-- km/h</strong>
+
+                            <span>
+                                Wind
+                            </span>
+
+                            <strong id="wind">
+                                -- km/h
+                            </strong>
+
                         </div>
 
                     </div>
 
+
+
+                    <!-- VISIBILITY -->
 
                     <div class="stat">
 
                         <div class="stat-icon yellow">
-                            <i class="fa-solid fa-eye"></i>
+
+                            <i
+                                class="fa-solid fa-eye"
+                            ></i>
+
                         </div>
 
+
                         <div>
-                            <span>Visibility</span>
-                            <strong id="visibility">-- km</strong>
+
+                            <span>
+                                Visibility
+                            </span>
+
+                            <strong id="visibility">
+                                -- km
+                            </strong>
+
                         </div>
 
                     </div>
 
 
+
+                    <!-- PRESSURE -->
+
                     <div class="stat">
 
                         <div class="stat-icon red">
-                            <i class="fa-solid fa-gauge-high"></i>
+
+                            <i
+                                class="fa-solid fa-gauge-high"
+                            ></i>
+
                         </div>
 
+
                         <div>
-                            <span>Pressure</span>
-                            <strong id="pressure">-- hPa</strong>
+
+                            <span>
+                                Pressure
+                            </span>
+
+                            <strong id="pressure">
+                                -- hPa
+                            </strong>
+
                         </div>
 
                     </div>
@@ -242,108 +844,323 @@
             </section>
 
 
-            <!-- ================= RIGHT PANEL ================= -->
 
-            <aside class="right-panel">
+            <!-- =================================================
+                 SIDE PANEL
+            ================================================== -->
+
+            <aside class="side-panel">
 
 
-                <!-- SUN CARD -->
+                <!-- =================================================
+                     SUN SCHEDULE
+                ================================================== -->
 
-                <div class="small-card glass">
+                <section class="small-card glass">
+
 
                     <div class="card-heading">
 
-                        <h3>Sun Schedule</h3>
+
+                        <div>
+
+                            <span class="mini-label">
+                                DAYLIGHT
+                            </span>
+
+                            <h3>
+                                Sun Schedule
+                            </h3>
+
+                        </div>
+
 
                         <i class="fa-solid fa-sun"></i>
 
                     </div>
 
 
+
+                    <!-- SUNRISE -->
+
                     <div class="sun-row">
+
 
                         <div class="sun-icon sunrise">
-                            <i class="fa-solid fa-arrow-up"></i>
+
+                            <i class="fa-solid fa-sun"></i>
+
                         </div>
 
+
                         <div>
-                            <span>Sunrise</span>
-                            <strong id="sunrise">--:--</strong>
+
+                            <span>
+                                Sunrise
+                            </span>
+
+                            <strong id="sunrise">
+                                --
+                            </strong>
+
                         </div>
 
                     </div>
 
+
+
+                    <!-- SUNSET -->
 
                     <div class="sun-row">
 
+
                         <div class="sun-icon sunset">
-                            <i class="fa-solid fa-arrow-down"></i>
+
+                            <i class="fa-solid fa-moon"></i>
+
                         </div>
 
+
                         <div>
-                            <span>Sunset</span>
-                            <strong id="sunset">--:--</strong>
+
+                            <span>
+                                Sunset
+                            </span>
+
+                            <strong id="sunset">
+                                --
+                            </strong>
+
                         </div>
 
                     </div>
 
-                </div>
+                </section>
 
 
-                <!-- AIR QUALITY -->
 
-                <div class="small-card glass">
+                <!-- =================================================
+                     AIR QUALITY
+                ================================================== -->
+
+                <section class="small-card glass">
+
 
                     <div class="card-heading">
 
-                        <h3>Air Quality</h3>
 
-                        <i class="fa-solid fa-leaf"></i>
+                        <div>
+
+                            <span class="mini-label">
+                                AIR MONITOR
+                            </span>
+
+                            <h3>
+                                Air Quality
+                            </h3>
+
+                        </div>
+
+
+                        <i class="fa-solid fa-wind"></i>
 
                     </div>
+
 
 
                     <div class="air-quality">
 
+
                         <div class="aq-circle">
 
-                            <strong id="aqValue">--</strong>
+                            <strong id="aqValue">
+                                --
+                            </strong>
 
-                            <span>AQI</span>
+                            <span>
+                                AQI
+                            </span>
 
                         </div>
+
 
                         <div>
 
                             <strong
+                                id="aqStatus"
                                 class="aq-status"
-                                id="aqStatus">
-                                --
+                            >
+                                Waiting
                             </strong>
 
+
                             <p>
-                                Current air quality
+                                Air quality index
+                                for your location.
                             </p>
 
                         </div>
 
                     </div>
 
-                </div>
+                </section>
 
             </aside>
 
 
-            <!-- ================= FORECAST ================= -->
 
-            <section class="forecast-section">
+            <!-- =================================================
+                 HOURLY FORECAST
+            ================================================== -->
+
+            <section class="hourly-section glass">
+
 
                 <div class="section-title">
 
+
                     <div>
-                        <span>WEATHER OUTLOOK</span>
-                        <h2>5-Day Forecast</h2>
+
+                        <span>
+                            NEXT HOURS
+                        </span>
+
+                        <h2>
+                            Hourly Forecast
+                        </h2>
+
                     </div>
+
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+
+                <div
+                    id="hourlyGrid"
+                    class="hourly-grid"
+                ></div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 WEATHER INSIGHTS
+            ================================================== -->
+
+            <section class="insights">
+
+
+                <!-- UV -->
+
+                <div class="insight-card glass">
+
+
+                    <i class="fa-solid fa-sun"></i>
+
+
+                    <div>
+
+                        <span>
+                            UV INDEX
+                        </span>
+
+                        <strong id="uvValue">
+                            --
+                        </strong>
+
+                        <p id="uvText">
+                            Waiting for data
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PRECIPITATION -->
+
+                <div class="insight-card glass">
+
+
+                    <i class="fa-solid fa-cloud-rain"></i>
+
+
+                    <div>
+
+                        <span>
+                            PRECIPITATION
+                        </span>
+
+                        <strong id="precipValue">
+                            --%
+                        </strong>
+
+                        <p>
+                            Chance of rain
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- WIND DIRECTION -->
+
+                <div class="insight-card glass">
+
+
+                    <i class="fa-solid fa-compass"></i>
+
+
+                    <div>
+
+                        <span>
+                            WIND
+                        </span>
+
+                        <strong id="windDirection">
+                            --
+                        </strong>
+
+                        <p id="windDetails">
+                            -- km/h
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 5 DAY FORECAST
+            ================================================== -->
+
+            <section class="forecast-section">
+
+
+                <div class="section-title">
+
+
+                    <div>
+
+                        <span>
+                            WEATHER OUTLOOK
+                        </span>
+
+                        <h2>
+                            5-Day Forecast
+                        </h2>
+
+                    </div>
+
 
                     <i class="fa-solid fa-calendar-days"></i>
 
@@ -351,39 +1168,57 @@
 
 
                 <div
+                    id="forecastGrid"
                     class="forecast-grid"
-                    id="forecastGrid">
-
-                    <!-- JavaScript will insert forecast -->
-
-                </div>
+                ></div>
 
             </section>
 
-        </main>
+        </div>
+
+    </main>
 
 
-        <!-- ================= FOOTER ================= -->
 
-        <footer>
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-            <div>
-                <i class="fa-solid fa-cloud-sun"></i>
-                SkyCast
-            </div>
-
-            <p>
-                Built with HTML • CSS • JavaScript • OpenWeatherMap API
-            </p>
-
-        </footer>
-
-    </div>
+    <footer>
 
 
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+        <span>
+
+            <i class="fa-solid fa-cloud-sun"></i>
+
+            SkyCast Weather Dashboard
+
+        </span>
+
+
+        <span>
+
+            Weather data powered by OpenWeather
+
+        </span>
+
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     
+     IMPORTANT:
+     This MUST be below all the HTML elements.
+========================================================= -->
+
+<script src="script.js"></script>
+
 
 </body>
-
 </html>
