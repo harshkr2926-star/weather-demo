@@ -1,77 +1,169 @@
-# 🌤️ SkyCast — Smart Weather Dashboard
+# 🌤️ SkyCast - Modern Weather Dashboard
 
-SkyCast is a modern, responsive weather dashboard that provides real-time weather information for cities around the world.
-
-The application uses the **OpenWeather API** to display current weather conditions, forecasts, air quality, and other useful weather information in a beautiful interface.
+SkyCast is a modern and responsive weather dashboard built with **HTML, CSS, JavaScript, Node.js, and Express.js**. It provides real-time weather information, hourly forecasts, 5-day forecasts, air quality data, and location-based weather using the OpenWeather API.
 
 ---
 
-## ✨ Features
+## 🚀 Features
 
-- 🌡️ Real-time temperature
-- 🔄 Celsius / Fahrenheit unit switching
-- 🔍 Search weather by city
+- 🔍 Search weather by city name
 - 📍 Get weather using current location
-- 🌤️ Dynamic weather icons
-- 🌧️ Rain probability
-- 💧 Humidity information
-- 💨 Wind speed and direction
-- 👁️ Visibility
-- 📊 Atmospheric pressure
-- 🌅 Sunrise and sunset times
-- 🌫️ Air Quality Index (AQI)
-- 🕐 Hourly forecast
-- 📅 5-day weather forecast
-- 🔎 Recent city searches
-- 🌈 Dynamic background based on weather conditions
-- 📱 Responsive design
-- ⚡ Loading and error states
+- 🌡️ Toggle between Celsius and Fahrenheit
+- ⏰ Hourly weather forecast
+- 📅 5-Day weather forecast
+- 🌅 Sunrise & Sunset timings
+- 💨 Air Quality Index (AQI)
+- 💧 Humidity
+- 🌬️ Wind Speed & Direction
+- 👀 Visibility
+- 📊 Atmospheric Pressure
+- 🌧️ Rain Probability
+- 💾 Recent search history (Local Storage)
+- 🎨 Dynamic background based on weather conditions
+- 📱 Fully Responsive UI
+- 🔒 API Key secured on the backend using Express.js
 
 ---
 
-## 🖥️ Preview
-
-SkyCast has a modern weather-dashboard design with:
-
-- Dark glassmorphism UI
-- Blue gradient background
-- Weather cards
-- Search interface
-- Weather statistics
-- Forecast cards
-- Responsive layout
-
----
-
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
 ### Frontend
-
 - HTML5
 - CSS3
-- JavaScript (ES6+)
+- JavaScript (ES6)
 
-### APIs
+### Backend
+- Node.js
+- Express.js
 
-- OpenWeather Current Weather API
-- OpenWeather 5-Day Forecast API
-- OpenWeather Air Pollution API
-
-### Libraries
-
-- Font Awesome
-- Google Fonts
-  - Inter
-  - Outfit
+### API
+- OpenWeather API
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
-```text
-SkyCast/
+```
+weather-demo/
 │
 ├── index.html
 ├── style.css
 ├── script.js
+├── server.js
+├── package.json
+├── package-lock.json
+├── .env
 └── README.md
+```
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/weather-demo.git
+```
+
+### 2. Navigate to the project
+
+```bash
+cd weather-demo
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Create a `.env` file
+
+```env
+OPENWEATHER_API_KEY=YOUR_API_KEY
+PORT=3002
+```
+
+Get your API key from:
+
+https://openweathermap.org/api
+
+---
+
+## ▶️ Run the Project
+
+```bash
+npm start
+```
+
+Server starts at
+
+```
+http://localhost:3002
+```
+
+Open your browser and visit
+
+```
+http://localhost:3002
+```
+
+---
+
+
+
+## ✨ Future Improvements
+
+- Weather Maps
+- Dark/Light Mode
+- Weather Alerts
+- Weekly Forecast
+- Favorite Cities
+- PWA Support
+- Multi-language Support
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Add feature"
+```
+
+4. Push changes
+
+```bash
+git push origin feature-name
+```
+
+5. Create a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Harsh Kumar**
+
+GitHub: https://github.com/harshkr2926-star
+
+---
+
+⭐ If you like this project, don't forget to Star the repository!
